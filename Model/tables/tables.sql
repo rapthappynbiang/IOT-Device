@@ -4,8 +4,8 @@ CREATE TABLE IF NOT EXISTS iot_data_schema.Facility (
     facility_id SERIAL PRIMARY KEY,
     name VARCHAR(150),
     address VARCHAR(150),
-    latitude NUMBER,
-    longitude NUMBER,
+    latitude FLOAT,
+    longitude FLOAT,
     contact_no VARCHAR(20),
     email_id VARCHAR(150)
 );
@@ -35,10 +35,11 @@ CREATE TABLE IF NOT EXISTS iot_data_schema.Zone (
 );
 
 -- Creating the 'Sensor Type' Table
+-- DROP TABLE IF EXISTS iot_data_schema.Sensor_Type CASCADE;
 CREATE TABLE IF NOT EXISTS iot_data_schema.Sensor_Type (
     sensor_type_id SERIAL PRIMARY KEY,
-    sensor_type VARCHAR(10),
-    specification VARCHAR(10)
+    sensor_type VARCHAR(100),
+    specification VARCHAR(100)
 );
 
 -- Creating the 'Sensor' Table
@@ -47,7 +48,7 @@ CREATE TABLE IF NOT EXISTS iot_data_schema.Sensor (
     zone_id INT,
     sensor_name VARCHAR(150),
     sensor_type_id INT,
-    status VARCHAR(10),
+    status VARCHAR(50),
     FOREIGN KEY (zone_id) REFERENCES iot_data_schema.Zone(zone_id),
     FOREIGN KEY (sensor_type_id) REFERENCES iot_data_schema.Sensor_Type(sensor_type_id)
 );
@@ -56,7 +57,7 @@ CREATE TABLE IF NOT EXISTS iot_data_schema.Sensor (
 CREATE TABLE IF NOT EXISTS iot_data_schema.Sensor_Data (
     data_id SERIAL PRIMARY KEY,
     sensor_id INT,
-    value NUMBER,
+    value FLOAT,
     timestamp TIMESTAMP,
     FOREIGN KEY (sensor_id) REFERENCES iot_data_schema.Sensor(sensor_id)
 );
@@ -66,7 +67,7 @@ CREATE TABLE IF NOT EXISTS iot_data_schema.Alarm_Configuration (
     alarm_config_id SERIAL PRIMARY KEY,
     alarm_severity VARCHAR(10),
     email_id VARCHAR(150),
-    trigger_condition STRING,
+    trigger_condition VARCHAR(150),
     sensor_type_id INT,
     FOREIGN KEY (sensor_type_id) REFERENCES iot_data_schema.Sensor_Type(sensor_type_id)
 );

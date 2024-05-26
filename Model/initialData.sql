@@ -9,7 +9,7 @@ INSERT INTO iot_data_schema.Building (building_id, building_name, facility_id) V
 INSERT INTO iot_data_schema.Floor (floor_id, floor_name, building_id) VALUES
 (1, 'First Floor', 1),
 (2, 'Second Floor', 1),
-(3, 'First Floor', 2);
+(3, 'Third Floor', 2);
 
 INSERT INTO iot_data_schema.Zone (zone_id, zone_name, floor_id) VALUES
 (1, 'North Wing', 1),
