@@ -1,0 +1,27 @@
+{
+  "name": "iot-device",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rapthappynbiang/IOT-Device.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rapthappynbiang/IOT-Device/issues"
+  },
+  "homepage": "https://github.com/rapthappynbiang/IOT-Device#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.19.2",
+    "nodemon": "^3.1.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}
