@@ -1,4 +1,5 @@
 CREATE SCHEMA IF NOT EXISTS iot_data_schema;
+
 -- Creating the 'Facility' Table
 CREATE TABLE IF NOT EXISTS iot_data_schema.Facility (
     facility_id SERIAL PRIMARY KEY,
