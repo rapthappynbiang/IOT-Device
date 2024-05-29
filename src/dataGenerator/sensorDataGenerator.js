@@ -1,8 +1,10 @@
+const { publishMessage } = require("../utils");
 const generateRange = (min, max) => {
   const value = parseFloat((Math.random() * (max - min) + min).toFixed(2));
   return value;
 };
 // Function to log sensor data
+
 const logData = function (data) {
   console.log(
     "Sensor ID: "
@@ -25,14 +27,18 @@ const generateSensorData = ({
     case "range":
       setInterval(() => {
         const value = generateRange(min, max);
-        logData({
+        const data = {
           sensorId: sensorID, // Humidity sensor ID
           messaggeTopic,
           value: String(value),
           timestamp: new Date().toLocaleTimeString(),
-        });
-        // use publisher
+        };
+        // logData(data);
+        // publish data
+        publishMessage(messaggeTopic, JSON.stringify(data));
       }, frequency);
+      break;
+    default:
   }
 };
 

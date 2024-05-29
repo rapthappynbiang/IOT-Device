@@ -1,9 +1,12 @@
 const { Router } = require("express");
-const { generateSensorDataController } = require("../controller/sensordata");
+const {
+  generateSensorDataController,
+  subscribeTopicController,
+} = require("../controller/sensordata");
 
 const router = Router();
 
 router.route("/generateData").post(generateSensorDataController);
-router.route("/subscribe").post(generateSensorDataController);
+router.route("/subscribe").post(subscribeTopicController);
 
 module.exports = router;
