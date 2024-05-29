@@ -41,6 +41,10 @@ const subscribeTopicController = async (req, res) => {
     sensorTypes.map(async (type) => {
       await subscribeToChannel(type, async (message) => {
         console.log("message", message);
+
+        // parse the message and insert into sensor_data table
+
+        // check the alarm condition
       });
     });
 
