@@ -57,11 +57,11 @@ CREATE TABLE IF NOT EXISTS whitefield_bangalore.sensor (
 
 -- Creating the 'sensor data' Table
 CREATE TABLE IF NOT EXISTS whitefield_bangalore.sensor_data (
-    data_id SERIAL PRIMARY KEY,
     sensor_id INT,
     value FLOAT,
-    timestamp TIMESTAMP
-);
+    timestamp TIMESTAMP,
+    PRIMARY KEY (sensor_id, timestamp)
+)  PARTITION BY RANGE (timestamp);
 
 -- Creating the 'Alarm Configuration' Table
 CREATE TABLE IF NOT EXISTS whitefield_bangalore.alarm_configuration (
@@ -130,3 +130,43 @@ CREATE TABLE IF NOT EXISTS whitefield_bangalore.grant_lists (
     action VARCHAR(10), -- "read"|"delete"|"create","update"
     emp_id INTEGER REFERENCES whitefield_bangalore.employee(id)
 );
+
+CREATE TABLE IF NOT EXISTS whitefield_bangalore.sensor_data_2024_01 PARTITION OF whitefield_bangalore.sensor_data
+    FOR VALUES FROM ('2024-01-01 00:00:00') TO ('2024-02-01 00:00:00');
+
+CREATE TABLE IF NOT EXISTS whitefield_bangalore.sensor_data_2024_02 PARTITION OF whitefield_bangalore.sensor_data
+    FOR VALUES FROM ('2024-02-01 00:00:00') TO ('2024-03-01 00:00:00');
+
+CREATE TABLE IF NOT EXISTS whitefield_bangalore.sensor_data_2024_03 PARTITION OF whitefield_bangalore.sensor_data
+    FOR VALUES FROM ('2024-03-01 00:00:00') TO ('2024-04-01 00:00:00');
+
+CREATE TABLE IF NOT EXISTS whitefield_bangalore.sensor_data_2024_04 PARTITION OF whitefield_bangalore.sensor_data
+    FOR VALUES FROM ('2024-04-01 00:00:00') TO ('2024-05-01 00:00:00');
+
+CREATE TABLE IF NOT EXISTS whitefield_bangalore.sensor_data_2024_05 PARTITION OF whitefield_bangalore.sensor_data
+    FOR VALUES FROM ('2024-05-01 00:00:00') TO ('2024-06-01 00:00:00');
+
+CREATE TABLE IF NOT EXISTS whitefield_bangalore.sensor_data_2024_06 PARTITION OF whitefield_bangalore.sensor_data
+    FOR VALUES FROM ('2024-06-01 00:00:00') TO ('2024-07-01 00:00:00');
+
+CREATE TABLE IF NOT EXISTS whitefield_bangalore.sensor_data_2024_07 PARTITION OF whitefield_bangalore.sensor_data
+    FOR VALUES FROM ('2024-07-01 00:00:00') TO ('2024-08-01 00:00:00');
+    
+CREATE TABLE IF NOT EXISTS whitefield_bangalore.sensor_data_2024_08 PARTITION OF whitefield_bangalore.sensor_data
+    FOR VALUES FROM ('2024-08-01 00:00:00') TO ('2024-09-01 00:00:00');
+
+CREATE TABLE IF NOT EXISTS whitefield_bangalore.sensor_data_2024_09 PARTITION OF whitefield_bangalore.sensor_data
+    FOR VALUES FROM ('2024-09-01 00:00:00') TO ('2024-10-01 00:00:00');
+
+CREATE TABLE IF NOT EXISTS whitefield_bangalore.sensor_data_2024_10 PARTITION OF whitefield_bangalore.sensor_data
+    FOR VALUES FROM ('2024-10-01 00:00:00') TO ('2024-11-01 00:00:00');
+
+CREATE TABLE IF NOT EXISTS whitefield_bangalore.sensor_data_2024_11 PARTITION OF whitefield_bangalore.sensor_data
+    FOR VALUES FROM ('2024-11-01 00:00:00') TO ('2024-12-01 00:00:00');
+
+CREATE TABLE IF NOT EXISTS whitefield_bangalore.sensor_data_2024_12 PARTITION OF whitefield_bangalore.sensor_data
+    FOR VALUES FROM ('2024-12-01 00:00:00') TO ('2025-01-01 00:00:00');
+
+
+
+

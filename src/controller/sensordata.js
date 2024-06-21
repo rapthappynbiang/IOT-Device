@@ -1,8 +1,7 @@
 const { db } = require("../config/config");
 const { generateSensorData } = require("../dataGenerator/sensorDataGenerator");
 const { subscribeToChannel } = require("../utils");
-const { alarmConfig } = require("../utils/alarms");
-const { addAlarm } = require("./alarmsController");
+const { checkAlarm } = require("./alarmsController");
 
 const generateSensorDataController = async (req, res) => {
   try {
@@ -90,29 +89,7 @@ const subscribeTopicController = async (req, res) => {
         );
 
         // check if the alarm is configured for the sensor
-        const hasAlarmConfigured = alarmConfig.hasAlarmConfig(sensorId);
-
-        if (!hasAlarmConfigured) return;
-
-        const potentialAlarm = alarmConfig.getPotentialAlarm(sensorId, value);
-
-        // ifnot a potentialAlarm
-        if (!potentialAlarm.isPotentialAlarm) return;
-
-        const isAlarm = alarmConfig.isAlarm(
-          sensorId,
-          potentialAlarm.sensorAlarm.alarm_config_id,
-          1
-        );
-
-        // if is alarm inseert alarm ito table
-        if (isAlarm) {
-          await addAlarm(potentialAlarm.sensorAlarm, value);
-          return;
-        }
-
-        // update the alarm count if it is a potential alarm
-        alarmConfig.setPotentialAlarm(sensorId, potentialAlarm.sensorAlarm);
+        await checkAlarm(jsonData);
       });
     });
 

@@ -52,4 +52,36 @@ const addAlarm = async (alarmDetail, value) => {
   }
 };
 
-module.exports = { subScribeToAlarms, addAlarm };
+const checkAlarm = async (sensorData) => {
+  const { sensorId, value, messageTopic, timestamp } = sensorData;
+  try {
+    // check if the alarm is configured for the sensor
+    const hasAlarmConfigured = alarmConfig.hasAlarmConfig(sensorId);
+
+    if (!hasAlarmConfigured) return;
+
+    const potentialAlarm = alarmConfig.getPotentialAlarm(sensorId, value);
+
+    // ifnot a potentialAlarm
+    if (!potentialAlarm.isPotentialAlarm) return;
+
+    const isAlarm = alarmConfig.isAlarm(
+      sensorId,
+      potentialAlarm.sensorAlarm.alarm_config_id,
+      1
+    );
+
+    // if is alarm inseert alarm ito table
+    if (isAlarm) {
+      await addAlarm(potentialAlarm.sensorAlarm, value);
+      return;
+    }
+
+    // update the alarm count if it is a potential alarm
+    alarmConfig.setPotentialAlarm(sensorId, potentialAlarm.sensorAlarm);
+  } catch (error) {
+    console.log("Error");
+  }
+};
+
+module.exports = { subScribeToAlarms, addAlarm, checkAlarm };
