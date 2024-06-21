@@ -25,17 +25,17 @@ INSERT INTO whitefield_bangalore.Sensor (sensor_id, zone_id, sensor_name, sensor
 (1, 1, 'Temp Sensor 1', 1, 'Active'),
 (2, 2, 'Humidity Sensor 1', 2, 'Inactive');
 
-INSERT INTO whitefield_bangalore.Alarm_Configuration (alarm_config_id, alarm_severity, email_id, threshold_value, comparison) VALUES
-(1, 'High', 'alerts@mainfacility.com', '70', 'greaterThan'),
-(2, 'Medium', 'alerts@secondaryfacility.com', '40', 'lessThan');
+INSERT INTO whitefield_bangalore.Alarm_Configuration (alarm_config_id, alarm_severity, email_id, threshold_value, comparison, data_category) VALUES
+(1, 'High', 'alerts@mainfacility.com', '70', 'greaterThan', 'Temperature'),
+(2, 'Medium', 'alerts@secondaryfacility.com', '40', 'lessThan', 'Humidity');
 
 INSERT INTO whitefield_bangalore.alarm_config_sensor (alarm_config_id, sensor_id) VALUES
 (1, 1),
 (2, 2);
 
-INSERT INTO whitefield_bangalore.Alarm (alarm_id, sensor_id, status, triggered_at, alarm_config_id) VALUES
-(1, 1, 'Triggered', '2023-01-01 10:05:00', 1),
-(2, 2, 'Cleared', '2023-01-01 11:05:00', 2);
+INSERT INTO whitefield_bangalore.Alarm (alarm_id, sensor_id, status, triggered_at, alarm_config_id, data_category, value) VALUES
+(1, 1, 'Triggered', '2023-01-01 10:05:00', 1,'Temperature','80.90'),
+(2, 2, 'Triggered', '2023-01-01 11:05:00', 2, 'Humidity','20.25');
 
 INSERT INTO whitefield_bangalore.Employee (id, name, address, contact_no, email_id, building_id) VALUES
 (1, 'John Doe', '123 Main St, Anytown, USA', '123-456-7890', 'johndoe@mainfacility.com', 1),

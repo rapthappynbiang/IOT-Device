@@ -9,8 +9,10 @@ class AlarmConfig {
     this.alarmConfig[sensorId] = [...this.alarmConfig[sensorId], { ...config }];
   }
 
-  getAlarmConfig(sensorId) {
-    return this.alarmConfig[sensorId];
+  getAlarmConfig(sensorId, dataCategory) {
+    return this.alarmConfig[sensorId]?.find(
+      (config) => config.data_category === dataCategory
+    );
   }
 
   hasAlarmConfig(sensorId) {
@@ -38,16 +40,14 @@ class AlarmConfig {
     this.potentialAlarms = newPotentialAlarms;
   }
 
-  getPotentialAlarm(sensorId, value) {
-    if (!this.hasAlarmConfig(sensorId))
-      return { isPotentialAlarm: false, sensorAlarm: undefined };
+  isPotentialAlarm(sensorId, value, dataCategory) {
+    if (!this.hasAlarmConfig(sensorId)) return false;
 
-    const sensorAlarmsConfig = this.getAlarmConfig(sensorId);
+    const sensorAlarmsConfig = this.getAlarmConfig(sensorId, dataCategory);
 
-    if (sensorAlarmsConfig.length === 0)
-      return { isPotentialAlarm: false, sensorAlarm: undefined };
+    if (!sensorAlarmsConfig) return false;
 
-    let sensorAlarm = sensorAlarmsConfig.find((config) => {
+    const checkAlarm = (config) => {
       if (config.comparison === "equals")
         return String(value) === config.threshold_value;
       if (config.comparison === "not_equals")
@@ -60,9 +60,9 @@ class AlarmConfig {
         return Number(value) >= Number(config.threshold_value);
       if (config.comparison === "lessThanOrEqual")
         return Number(value) <= Number(config.threshold_value);
-    });
+    };
 
-    return { isPotentialAlarm: Boolean(sensorAlarm), sensorAlarm };
+    return checkAlarm(sensorAlarmsConfig);
   }
 
   isAlarm(sensorId, alarmConfigId, count) {

@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS whitefield_bangalore.sensor_data (
     sensor_id INT,
     value FLOAT,
     timestamp TIMESTAMP,
+    data_category VARCHAR(50),
     PRIMARY KEY (sensor_id, timestamp)
 )  PARTITION BY RANGE (timestamp);
 
@@ -67,6 +68,7 @@ CREATE TABLE IF NOT EXISTS whitefield_bangalore.sensor_data (
 CREATE TABLE IF NOT EXISTS whitefield_bangalore.alarm_configuration (
     alarm_config_id SERIAL PRIMARY KEY,
     alarm_severity VARCHAR(10),
+    data_category VARCHAR(50),
     email_id VARCHAR(150),
     threshold_value VARCHAR(50),
     comparison VARCHAR(20) -- "equals"|"greaterThanEqual"|"greaterThan"|"lessThan"|"lessThanEqual"|"isNull"
@@ -82,14 +84,27 @@ CREATE TABLE IF NOT EXISTS whitefield_bangalore.alarm_config_sensor (
 );
 
 
--- Creating the 'Alarm' Table
+-- Creating the 'Alarm' Table for storing all triggered alarm that has not been cleared
 CREATE TABLE IF NOT EXISTS whitefield_bangalore.alarm (
     alarm_id SERIAL PRIMARY KEY,
     sensor_id INT,
     status VARCHAR(150),
     triggered_at TIMESTAMP,
+    data_category VARCHAR(50),
     alarm_config_id INT,
+    value VARCHAR(100),
     FOREIGN KEY (alarm_config_id) REFERENCES whitefield_bangalore.alarm_configuration(alarm_config_id)
+);
+
+.--Alarm history table for all cleared alarms
+create TABLE IF NOT EXISTS whitefield_bangalore.alarm_history(
+    sensor_id INT,
+    status VARCHAR(150),
+    triggered_at TIMESTAMP,
+    data_category VARCHAR(50),
+    alarm_config_id INT,
+    value VARCHAR(100),
+    PRIMARY KEY (sensor_id, triggered_at)
 );
 
 -- Creating the 'Employee' Table
