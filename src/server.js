@@ -1,6 +1,7 @@
 const PORT = 3000;
 const { app } = require("./app/app");
 const { db } = require("./config/config");
+const { subScribeToAlarms } = require("./controller/alarmsController");
 const {
   connectToRedis,
   publishMessage,
@@ -23,6 +24,8 @@ let client;
     app.listen(PORT, () => {
       console.log(`App is listening on PORT ${PORT}`);
     });
+
+    subScribeToAlarms();
 
     // Example usage of subscribeToChannel with an async message handler
     subscribeToChannel("exampleChannel", async (message) => {

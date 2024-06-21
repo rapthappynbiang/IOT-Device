@@ -1,4 +1,6 @@
 const redis = require("redis");
+const nodemailer = require("nodemailer");
+require("dotenv").config();
 
 const REDIS_HOST = "localhost";
 const redisClient = redis.createClient({
@@ -51,9 +53,54 @@ const subscribeToChannel = async (channel, messageHandler) => {
   }
 };
 
+const EMAIL = process.env.NODEMAILER_EMAIL;
+const PASSWORD = process.env.NODEMAILER_PASSWORD;
+
+// Create a transporter object using SMTP transport
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: EMAIL,
+    pass: PASSWORD,
+  },
+});
+
+// Function to send email
+const sendEmailNotification = (sensorId, value, threshold, email) => {
+  console.log("first", email);
+  const mailOptions = {
+    from: EMAIL,
+    to: email,
+    subject: "Alarm Triggered",
+    text: `Alarm triggered for sensor ${sensorId}: value ${value} exceeds threshold ${threshold}`,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return console.log(error);
+    }
+    console.log("Message sent: " + info.response);
+  });
+};
+
+function getCurrentTimestamp() {
+  const now = new Date();
+
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+  const day = String(now.getDate()).padStart(2, "0");
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  const seconds = String(now.getSeconds()).padStart(2, "0");
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 // Export functions after ensuring Redis connection is established
 module.exports = {
   connectToRedis,
   publishMessage,
   subscribeToChannel,
+  sendEmailNotification,
+  getCurrentTimestamp,
 };
