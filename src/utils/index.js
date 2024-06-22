@@ -67,7 +67,6 @@ const transporter = nodemailer.createTransport({
 
 // Function to send email
 const sendEmailNotification = (sensorId, value, threshold, email) => {
-  console.log("first", email);
   const mailOptions = {
     from: EMAIL,
     to: email,

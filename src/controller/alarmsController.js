@@ -68,6 +68,33 @@ const updateAlarmValue = async (value, alarm) => {
   }
 };
 
+const clearAlarm = async (alarm) => {
+  try {
+    await db.query(`BEGIN;`);
+    await db.query(
+      `DELETE FROM whitefield_bangalore.alarm where alarm_id=$1;`,
+      [alarm.alarm_id]
+    );
+    await db.query(
+      `INSERT INTO whitefield_bangalore.alarm_history (sensor_id, status, triggered_at,data_category, alarm_config_id, value)
+                    VALUES ($1, $2, $3, $4, $5, $6);`,
+      [
+        alarm.sensor_id,
+        "Cleared",
+        alarm.triggered_at,
+        alarm.data_category,
+        alarm.alarm_config_id,
+        alarm.value,
+      ]
+    );
+    await db.query(`COMMIT;`);
+    console.log("ALARM CLEARED SUCCESSFULLY");
+  } catch (error) {
+    await db.query(`ROLLBACK;`);
+    console.log("INTERNAL SERVER ERROR", error);
+  }
+};
+
 const checkAlarm = async (sensorData) => {
   const { sensorId, value, messageTopic } = sensorData;
   try {
@@ -82,17 +109,25 @@ const checkAlarm = async (sensorData) => {
       messageTopic
     );
 
+    const sensorAlarm = alarmConfig.getAlarmConfig(sensorId, messageTopic);
+
+    if (!sensorAlarm) return;
+
     // if not a potentialAlarm
     if (!isPotentialAlarm) {
       // check if the alarm has been triggered earlier if then clear/reset the alarm
+      const res = await db.query(
+        `SELECT * FROM whitefield_bangalore.alarm where alarm_config_id=$1`,
+        [sensorAlarm.alarm_config_id]
+      );
+
+      if (res.rowCount === 0) return;
+
+      await clearAlarm(res.rows[0]);
+      alarmConfig.clearPotentialAlarm(sensorId, sensorAlarm.alarm_config_id);
+
       return;
     }
-
-    const sensorAlarm = alarmConfig.getAlarmConfig(sensorId, messageTopic);
-
-    console.log("sensorAlarm", sensorAlarm);
-
-    if (!sensorAlarm) return;
 
     const isAlarm = alarmConfig.isAlarm(
       sensorId,
@@ -107,8 +142,9 @@ const checkAlarm = async (sensorData) => {
         `SELECT EXISTS(SELECT 1 FROM whitefield_bangalore.alarm WHERE alarm_config_id=$1)`,
         [sensorAlarm.alarm_config_id]
       );
+
       // if alarm already exists update alarm
-      if (res.rowCount > 0) {
+      if (res.rowCount > 0 && res.rows[0].exists) {
         await updateAlarmValue(value, sensorAlarm);
         return;
       }

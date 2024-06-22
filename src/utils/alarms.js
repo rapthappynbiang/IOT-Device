@@ -40,6 +40,20 @@ class AlarmConfig {
     this.potentialAlarms = newPotentialAlarms;
   }
 
+  clearPotentialAlarm(sensorId, alarmConfigId) {
+    if (!this.potentialAlarms[sensorId]?.[alarmConfigId]) return;
+    const newPotentialAlarms = { ...this.potentialAlarms };
+
+    newPotentialAlarms[sensorId] = {
+      ...newPotentialAlarms[sensorId],
+      [alarmConfigId]: {
+        count: 0,
+      },
+    };
+
+    this.potentialAlarms = newPotentialAlarms;
+  }
+
   isPotentialAlarm(sensorId, value, dataCategory) {
     if (!this.hasAlarmConfig(sensorId)) return false;
 

@@ -78,9 +78,9 @@ const subscribeTopicController = async (req, res) => {
 
         // parse the message and insert into sensor_data table
         await db.query(
-          `INSERT INTO whitefield_bangalore.sensor_data (sensor_id, value, timestamp)
-          VALUES ($1, $2, $3)`,
-          [sensorId, Number(value), timestamp]
+          `INSERT INTO whitefield_bangalore.sensor_data (sensor_id, value, data_category, timestamp)
+          VALUES ($1, $2, $3, $4)`,
+          [sensorId, Number(value), messageTopic, timestamp]
         );
 
         console.log(
